@@ -59,7 +59,7 @@ English | [中文](readme_zh.md)
 + 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。  
 + 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。     
 
-这两个特性 让 Bert 具有了 seq2seq 能力。$x_i$
+这两个特性 让 Bert 具有了 seq2seq 能力。
 
 ## 2.3.2 标签平滑
 
