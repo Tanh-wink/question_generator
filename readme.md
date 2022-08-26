@@ -55,8 +55,8 @@ English | 中文(readme.md)
 为了让 BERT 模型具有 seq2seq 的能力，使其能够处理 NLG 任务，例如：问题生成 。
 基于 2019 年发表在 NIPS 上的 [《Unified Language Model Pre-training for Natural Language Understanding and Generation》](http://papers.nips.cc/paper/9464-unified-language-model-pre-training-for-natural-language-understanding-and-generation.pdf) ，我们使用了论文中提到的 Seq2seq Mask 来替换原 Bert  Multi-head attention 中的 attention mask ，让 Bert 在训练的过程中，具有以下的特性： 
 
-(a) 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。  
-(b) 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。     
++ 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。  
++ 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。     
 
 这两个特性 让 Bert 具有了 seq2seq 能力。
 
@@ -70,9 +70,9 @@ $$
 \hat{y}_i = y_i*(1 - \alpha) + \frac{\alpha}{K}
 $$  
 
-$y_i$ 是第 i 个样本的 one-hot 标签向量，维度是词表的大小
+$y_i$是第 i 个样本的 one-hot 标签向量，维度是词表的大小
 
-$\alpha$ 是平滑因子，通常是 0.1 ， $K$ 是类别个数， $\hat{y}_i$ 平滑后的标签向量
+$\alpha$是平滑因子，通常是 0.1 ， $K$ 是类别个数， $\hat{y}_i$平滑后的标签向量
 
 ### 2.3.3 针对 Embedding 层的对抗扰动
 
