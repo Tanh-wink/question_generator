@@ -55,8 +55,8 @@ English | 中文(readme.md)
 为了让 BERT 模型具有 seq2seq 的能力，使其能够处理 NLG 任务，例如：问题生成 。
 基于 2019 年发表在 NIPS 上的 [《Unified Language Model Pre-training for Natural Language Understanding and Generation》](http://papers.nips.cc/paper/9464-unified-language-model-pre-training-for-natural-language-understanding-and-generation.pdf) ，我们使用了论文中提到的 Seq2seq Mask 来替换原 Bert  Multi-head attention 中的 attention mask ，让 Bert 在训练的过程中，具有以下的特性： 
 
-(a) 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。
-(b) 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。   
+(a) 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。  
+(b) 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。     
 
 这两个特性 让 Bert 具有了 seq2seq 能力。
 
@@ -65,9 +65,11 @@ English | 中文(readme.md)
 标签平滑 是 一种正则化方法，通常用于分类问题，目的是防止模型在训练时过于自信地预测标签，改善泛化能力差的问题。
 
 将真实的标签进行 label smoothing
-$$
+
+$$  
 \hat{y}_i = y_i*(1 - \alpha) + \frac{\alpha}{K}
-$$
+$$  
+
 $y_i$ 是第 i 个样本的 one-hot 标签向量，维度是词表的大小
 
 $\alpha$ 是平滑因子，通常是 0.1 ， $K$ 是类别个数， $\hat{y}_i$ 平滑后的标签向量
@@ -77,9 +79,11 @@ $\alpha$ 是平滑因子，通常是 0.1 ， $K$ 是类别个数， $\hat{y}_i$ 
 对抗扰动本质上就是对抗训练，就是构造了一些对抗样本加入到原数据集中，增强模型对对抗样本的鲁棒性，同时提高模型的表现。但 NLP 的输入是文本，本质上就是 one-hot 向量，因此不存在所谓的 小扰动。因此，我们可以从 Embedding 层进行对抗扰动。在我们的方案中，我们是直接对 Embedding 层的权重进行扰动，让 look-up 后的词向量发生变化。
 
 对抗扰动的公式：
+
 $$
 \mathop{min}\limits_{\theta} \mathbb{E}_{(x,y) \in D}[\mathop{max}\limits_{\Delta x\in \Omega} Loss(x+\Delta x, y; \theta)]
 $$
+
 $\theta$ 是参数模型，$L(x,y;\theta)$ 单个模型的loss，$\Delta x$ 是对抗扰动，$\Omega$ 是扰动空间。
 
 1. 对 $x$ 加入对抗扰动 $\Delta x$ ，目的是 让 Loss 越大越好，即尽量让 模型 预测错误
