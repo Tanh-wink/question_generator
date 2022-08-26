@@ -34,7 +34,7 @@
 本解决方案在复赛榜单排名第四，**Rouge-L** 得分是：0.6278。
 	
 
-## 2.2 数据预处理模块：
+## 2.2 数据预处理模块
 使用 main.py 中的 load_train_json 函数，从原始数据 round1_train_0907.json 中提出去 QA pair。  
 我们尝试过剔除原始文本中的一些 非法字符 ，对一些字符进行替换。但模型的效果没有提升，所以，数据预处理的模块，暂时只起到数据提取和编码的作用。    
 我们将 text 和 answer 作为 Bert 的第一个句子，question 作为 bert 的第二个句子。具体编码格式如下：  
@@ -58,8 +58,8 @@
 为了让 BERT 模型具有 seq2seq 的能力，使其能够处理 NLG 任务，例如：问题生成 。
 基于 2019 年发表在 NIPS 上的 [《Unified Language Model Pre-training for Natural Language Understanding and Generation》](http://papers.nips.cc/paper/9464-unified-language-model-pre-training-for-natural-language-understanding-and-generation.pdf) ，我们使用了论文中提到的 Seq2seq Mask 来替换原 Bert  Multi-head attention 中的 attention mask ，让 Bert 在训练的过程中，具有以下的特性： 
 
-1. 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。
-2. 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。   
++ 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。  
++ 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。     
 
 这两个特性 让 Bert 具有了 seq2seq 能力。
 
@@ -68,38 +68,48 @@
 标签平滑 是 一种正则化方法，通常用于分类问题，目的是防止模型在训练时过于自信地预测标签，改善泛化能力差的问题。
 
 将真实的标签进行 label smoothing
-$$
+
+$$  
 \hat{y}_i = y_i*(1 - \alpha) + \frac{\alpha}{K}
-$$
+$$  
+
 $y_i$ 是第 i 个样本的 one-hot 标签向量，维度是词表的大小
 
-$\alpha$ 是平滑因子，通常是 0.1 ， $K$ 是类别个数， $\hat{y}_i$ 平滑后的标签向量
+$\alpha$
+
+是平滑因子，通常是 0.1 ， $ K $ 是类别个数， $ \hat{y}_i $平滑后的标签向量
 
 ### 2.3.3 针对 Embedding 层的对抗扰动
 
 对抗扰动本质上就是对抗训练，就是构造了一些对抗样本加入到原数据集中，增强模型对对抗样本的鲁棒性，同时提高模型的表现。但 NLP 的输入是文本，本质上就是 one-hot 向量，因此不存在所谓的 小扰动。因此，我们可以从 Embedding 层进行对抗扰动。在我们的方案中，我们是直接对 Embedding 层的权重进行扰动，让 look-up 后的词向量发生变化。
 
 对抗扰动的公式：
+
 $$
 \mathop{min}\limits_{\theta} \mathbb{E}_{(x,y) \in D}[\mathop{max}\limits_{\Delta x\in \Omega} Loss(x+\Delta x, y; \theta)]
 $$
-$\theta$ 是参数模型，$L(x,y;\theta)$ 单个模型的loss，$\Delta x$ 是对抗扰动，$\Omega$ 是扰动空间。
 
-1. 对 $x$ 加入对抗扰动 $\Delta x$ ，目的是 让 Loss 越大越好，即尽量让 模型 预测错误
-2. 当然 $\Delta x$ 不是越大越好，所以他会有一个 约束空间 $\Omega$
-3. 每个样本构造出来 对抗样本 $x + \Delta x$ 后，用它作为模型的输入，来最小化 loss， 更新模型的参数
+  ![](http://latex.codecogs.com/gif.latex?\\theta)  是参数模型， $ L(x,y;\theta) $ 单个模型的loss， $\Delta x$ 是对抗扰动， $\Omega$ 是扰动空间。
 
-**使用 FGM 计算 ** $\Delta x$
+（1）对 $x$ 加入对抗扰动 $\Delta x$ ，目的是 让 Loss 越大越好，即尽量让 模型 预测错误  
+（2） 当然 $\Delta x$ 不是越大越好，所以他会有一个 约束空间 $\Omega$  
+（3）每个样本构造出来 对抗样本 $x + \Delta x$ 后，用它作为模型的输入，来最小化 loss， 更新模型的参数  
+
+
+**使用 FGM 计算 **  $\Delta x$
 
 因为目的是为了增大 loss ，loss 减少的方法是梯度下降，那么 loss 增大的方法，我们就可以使用 梯度上升
 
 所以，可以这样取
+
 $$
 \Delta x = \epsilon \triangledown_x Loss(x, y; \theta)
 $$
+
 $\epsilon$ 是一个超参数，一般取 0.1
 
 为了防止计算出来的梯度过大，我们对梯度进行标准化
+
 $$
 \Delta x = \epsilon \frac{\triangledown_x Loss(x, y; \theta)}{||\triangledown_x Loss(x, y; \theta)||}
 $$
@@ -152,12 +162,12 @@ $T$ 是缩放因子。
 
 ## 2.4 参数设置：
 
-1. 文本长度设置（主要基于文本长度的分布）：
+(1) 文本长度设置（主要基于文本长度的分布）：
     + text 的最大长度 (max_t_len) 为 384
     + answer 的最大长度 (max_a_len) 为 96
     + question 的最大长度 (max_q_len) 为 32
 
-2. 训练参数（主要基于大量的调参实验）：
+(2) 训练参数（主要基于大量的调参实验）：
     + batch_size : 4
     + 梯度累积步数 (gradient_accumulation_steps) : 8
     + 迭代次数(EPOCHS) : 5   
@@ -167,7 +177,7 @@ $T$ 是缩放因子。
     + Teache model 在 Student loss 中所占的权重 (teacher_rate) : 0.5
     + 温度系数 (temperature) : 10
     
-3. 优化器设置：
+(3) 优化器设置：
     + 使用 Adam 优化器
     + 初始学习率为 3e-5
     + 使用学习率线性衰减函数，让 学习率 从第 1 个 step 到 最后一个 step ，线性衰减到 初始学习率 的 50% 。
