@@ -1,26 +1,27 @@
-# 1.所使用的依赖
+English | 中文(readme.md)
+# 1.Dependencies
 
-1. **操作系统版本:** Ubuntu 16.04 LTS
+1. **OS:** Ubuntu 16.04 LTS
 
-2. **Python的版本**  3.6.12
+2. **Python version**  3.6.12
 
-3. **需要安装的Python package**
+3. **Python package**
     + tensorflow-gpu       1.14.0
 
     + Keras                2.3.1
     + scikit-learn         0.23.2
     + tqdm                 4.50.0
 
-4. **CUDA 版本**  10.0
+4. **CUDA version**  10.0
 
-5. **cuDNN 版本** 7.6.0
+5. **cuDNN version** 7.6.0
 
     
 
 
-# 2. 解决方案
+# 2. Solution
 
-## 2.1 模型思路：
+## 2.1 Model ideas：
 针对“中医文献问题生成”这一问题，我们队伍的解决方案如下：
 
 + **训练阶段：** (1) 将 UniLM-MASK 和 BERT 类型的预训练模型 作为 baseline，采用“文档+答案+问题”的句子对作为输入。(2) 结合使
@@ -54,8 +55,8 @@
 为了让 BERT 模型具有 seq2seq 的能力，使其能够处理 NLG 任务，例如：问题生成 。
 基于 2019 年发表在 NIPS 上的 [《Unified Language Model Pre-training for Natural Language Understanding and Generation》](http://papers.nips.cc/paper/9464-unified-language-model-pre-training-for-natural-language-understanding-and-generation.pdf) ，我们使用了论文中提到的 Seq2seq Mask 来替换原 Bert  Multi-head attention 中的 attention mask ，让 Bert 在训练的过程中，具有以下的特性： 
 
-1. 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。
-2. 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。   
+(a) 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。
+(b) 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。   
 
 这两个特性 让 Bert 具有了 seq2seq 能力。
 
@@ -148,12 +149,12 @@ $T$ 是缩放因子。
 
 ## 2.4 参数设置：
 
-1. 文本长度设置（主要基于文本长度的分布）：
+(1) 文本长度设置（主要基于文本长度的分布）：
     + text 的最大长度 (max_t_len) 为 384
     + answer 的最大长度 (max_a_len) 为 96
     + question 的最大长度 (max_q_len) 为 32
 
-2. 训练参数（主要基于大量的调参实验）：
+(2) 训练参数（主要基于大量的调参实验）：
     + batch_size : 4
     + 梯度累积步数 (gradient_accumulation_steps) : 8
     + 迭代次数(EPOCHS) : 5   
@@ -163,7 +164,7 @@ $T$ 是缩放因子。
     + Teache model 在 Student loss 中所占的权重 (teacher_rate) : 0.5
     + 温度系数 (temperature) : 10
     
-3. 优化器设置：
+(3) 优化器设置：
     + 使用 Adam 优化器
     + 初始学习率为 3e-5
     + 使用学习率线性衰减函数，让 学习率 从第 1 个 step 到 最后一个 step ，线性衰减到 初始学习率 的 50% 。
