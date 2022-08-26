@@ -1,4 +1,5 @@
 English | 中文(readme.md)
+this $y_i$
 # 1.Dependencies
 
 1. **OS:** Ubuntu 16.04 LTS
