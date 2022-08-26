@@ -22,7 +22,7 @@ English | [中文](readme_zh.md)
 
 # 2. Solution
 
-## 2.1 Model ideas：
+## 2.1 Model ideas
 针对“中医文献问题生成”这一问题，我们队伍的解决方案如下：
 
 + **训练阶段：** (1) 将 UniLM-MASK 和 BERT 类型的预训练模型 作为 baseline，采用“文档+答案+问题”的句子对作为输入。(2) 结合使
@@ -32,7 +32,7 @@ English | [中文](readme_zh.md)
 本解决方案在复赛榜单排名第四，**Rouge-L** 得分是：0.6278。
 	
 
-## 2.2 数据预处理模块：
+## 2.2 数据预处理模块
 使用 main.py 中的 load_train_json 函数，从原始数据 round1_train_0907.json 中提出去 QA pair。  
 我们尝试过剔除原始文本中的一些 非法字符 ，对一些字符进行替换。但模型的效果没有提升，所以，数据预处理的模块，暂时只起到数据提取和编码的作用。    
 我们将 text 和 answer 作为 Bert 的第一个句子，question 作为 bert 的第二个句子。具体编码格式如下：  
@@ -59,7 +59,7 @@ English | [中文](readme_zh.md)
 + 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。  
 + 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。     
 
-这两个特性 让 Bert 具有了 seq2seq 能力。
+这两个特性 让 Bert 具有了 seq2seq 能力。$x_i$
 
 ## 2.3.2 标签平滑
 
