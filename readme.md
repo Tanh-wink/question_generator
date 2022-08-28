@@ -25,7 +25,10 @@ English | [中文](readme_zh.md)
 ## 2.1 Model ideas
 In response to the problem of "problem generation of Chinese medicine literature", our team's solution is as follows:
 
-+ **Training:** (1) The pre-trained models of UniLM-MASK and BERT types are used as the baseline, and the sentence pair of "document + answer + question" is used as input.(2) 结合使用标签平滑和基于 Embedding 层的对抗扰动来防止过拟合。(3)利用知识蒸馏技术来提高单模型的泛化性能。
++ **Training:** 
+(1) The pre-trained models of UniLM-MASK and BERT types are used as the baseline, and the sentence pair of "document + answer + question" is used as input.  
+(2) 结合使用标签平滑和基于 Embedding 层的对抗扰动来防止过拟合。  
+(3)利用知识蒸馏技术来提高单模型的泛化性能。  
 + **生成阶段：** (1) 使用 beam search 策略来进行问题生成。(2) 在每个时间步的单词预测阶段，使用基于 **WoBERT** 和 **WoNEZHA** 进行集成投票预测。
 
 本解决方案在复赛榜单排名第四，**Rouge-L** 得分是：0.6278。
