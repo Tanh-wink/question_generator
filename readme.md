@@ -23,10 +23,9 @@ English | [中文](readme_zh.md)
 # 2. Solution
 
 ## 2.1 Model ideas
-针对“中医文献问题生成”这一问题，我们队伍的解决方案如下：
+In response to the problem of "problem generation of Chinese medicine literature", our team's solution is as follows:
 
-+ **训练阶段：** (1) 将 UniLM-MASK 和 BERT 类型的预训练模型 作为 baseline，采用“文档+答案+问题”的句子对作为输入。(2) 结合使
-  用标签平滑和基于 Embedding 层的对抗扰动来防止过拟合。(3)利用知识蒸馏技术来提高单模型的泛化性能。
++ **Training:** (1) The pre-trained models of UniLM-MASK and BERT types are used as the baseline, and the sentence pair of "document + answer + question" is used as input.(2) 结合使用标签平滑和基于 Embedding 层的对抗扰动来防止过拟合。(3)利用知识蒸馏技术来提高单模型的泛化性能。
 + **生成阶段：** (1) 使用 beam search 策略来进行问题生成。(2) 在每个时间步的单词预测阶段，使用基于 **WoBERT** 和 **WoNEZHA** 进行集成投票预测。
 
 本解决方案在复赛榜单排名第四，**Rouge-L** 得分是：0.6278。
@@ -43,7 +42,7 @@ English | [中文](readme_zh.md)
 数据集划分：
 	我们使用 sklearn 的 train_test_split 函数对训练数据进行划分，90% 做为训练集， 10% 作为验证集。通过设置随机种子为 42 ，让实验具有可复现性。
 
-## 2.3 模型建立：
+## 2.3 Model Building
 ### 2.3.1 预训练文件
 
 基于已做的实验结果，我们选择性能表现最好的两种 bert 模型作为 ensemble 的对象：   
