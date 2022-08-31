@@ -56,7 +56,7 @@ In order to give the BERT model the ability of seq2seq and handle NLG tasks such
 the paper [《Unified Language Model Pre-training for Natural Language Understanding and Generation》](http://papers.nips.cc/paper/9464-unified-language-model-pre-training-for-natural-language-understanding-and-generation.pdf) was presented at the NIPS 2019. We use the Seq2seq Mask mentioned in the paper to replace the attention mask in the original Bert Multi-head attention, so that Bert has the following characteristics during the training process： 
 
 + First sentence (text + answer) can only see its own tokens，but not the tokens of the second sentence (question).   
-+ can only see the preceding tokens, including the tokens contained in the first sentence (text + answer).      
++ Second sentence can only see the preceding tokens, including the tokens contained in the first sentence (text + answer).      
 
 These two properties give Bert the seq2seq capability.
 
@@ -72,9 +72,7 @@ $$
 
 $y_i$ 是第 i 个样本的 one-hot 标签向量，维度是词表的大小
 
-$\alpha$
-
-是平滑因子，通常是 0.1 ， $ K $ 是类别个数， $ \hat{y}_i $平滑后的标签向量
+$\alpha$是平滑因子，通常是 0.1 ， $ K $ 是类别个数， $ \hat{y}_i $平滑后的标签向量
 
 ### 2.3.3 针对 Embedding 层的对抗扰动
 
@@ -86,7 +84,7 @@ $$
 \mathop{min}\limits_{\theta} \mathbb{E}_{(x,y) \in D}[\mathop{max}\limits_{\Delta x\in \Omega} Loss(x+\Delta x, y; \theta)]
 $$
 
-  ![](http://latex.codecogs.com/gif.latex?\\theta)  是参数模型， $ L(x,y;\theta) $ 单个模型的loss， $\Delta x$ 是对抗扰动， $\Omega$ 是扰动空间。
+  $\theta$ 是参数模型， $L(x,y;\theta)$ 单个模型的loss， $\Delta x$ 是对抗扰动， $\Omega$ 是扰动空间。
 
 （1）对 $x$ 加入对抗扰动 $\Delta x$ ，目的是 让 Loss 越大越好，即尽量让 模型 预测错误  
 （2） 当然 $\Delta x$ 不是越大越好，所以他会有一个 约束空间 $\Omega$  
