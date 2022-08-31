@@ -45,23 +45,22 @@ Data set division:
 
 ## 2.3 Model Building
 ### 2.3.1 Pretraining models
+According to the experimental results that have been done, we choose the two best-performing bert models as the objects of the ensemble:   
 
-基于已做的实验结果，我们选择性能表现最好的两种 bert 模型作为 ensemble 的对象：   
-
-+ 第一个是 **WoBERT** ，其预训练权重文件来自于**追一科技**开源的 [chinese_wobert_L-12_H-768_A-12](https://github.com/ZhuiyiTechnology/WoBERT)  。
-+ 第二个是 **WoNEZHA** ，其预训练文件来自于**追一科技**开源的 [chinese_wonezha_L-12_H-768_A-12](https://github.com/ZhuiyiTechnology/WoBERT) 。
++ The first is **WoBERT** ，which pre-training weights comes from the open source of **Chase Yi Technology** [chinese_wobert_L-12_H-768_A-12](https://github.com/ZhuiyiTechnology/WoBERT)  。
++ The second is **WoNEZHA** ，which pre-training weights comes from the open source of **Chase Yi Technology** [chinese_wonezha_L-12_H-768_A-12](https://github.com/ZhuiyiTechnology/WoBERT) 。
 
 ### 2.3.2 UniLM-MASK
 
-为了让 BERT 模型具有 seq2seq 的能力，使其能够处理 NLG 任务，例如：问题生成 。
-基于 2019 年发表在 NIPS 上的 [《Unified Language Model Pre-training for Natural Language Understanding and Generation》](http://papers.nips.cc/paper/9464-unified-language-model-pre-training-for-natural-language-understanding-and-generation.pdf) ，我们使用了论文中提到的 Seq2seq Mask 来替换原 Bert  Multi-head attention 中的 attention mask ，让 Bert 在训练的过程中，具有以下的特性： 
+In order to give the BERT model the ability of seq2seq and handle NLG tasks such as: question generation, 
+the paper [《Unified Language Model Pre-training for Natural Language Understanding and Generation》](http://papers.nips.cc/paper/9464-unified-language-model-pre-training-for-natural-language-understanding-and-generation.pdf) was presented at the NIPS 2019. We use the Seq2seq Mask mentioned in the paper to replace the attention mask in the original Bert Multi-head attention, so that Bert has the following characteristics during the training process： 
 
-+ 第一个句子 (text + answer) 只能看到自己本身的 token，而看不到第二个句子 (question) 的 token 。  
-+ 第二个句子 (question) 只能看到前面的 token ，包括第一个句子 (text + answer) 中含有的 token 。     
++ First sentence (text + answer) can only see its own tokens，but not the tokens of the second sentence (question).   
++ can only see the preceding tokens, including the tokens contained in the first sentence (text + answer).      
 
-这两个特性 让 Bert 具有了 seq2seq 能力。
+These two properties give Bert the seq2seq capability.
 
-## 2.3.2 标签平滑
+## 2.3.2 Label Smoothing
 
 标签平滑 是 一种正则化方法，通常用于分类问题，目的是防止模型在训练时过于自信地预测标签，改善泛化能力差的问题。
 
