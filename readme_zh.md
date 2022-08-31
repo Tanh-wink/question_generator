@@ -87,7 +87,7 @@ $$
 \mathop{min}\limits_{\theta} \mathbb{E}_{(x,y) \in D}[\mathop{max}\limits_{\Delta x\in \Omega} Loss(x+\Delta x, y; \theta)]
 $$
 
-  ![](http://latex.codecogs.com/gif.latex?\\theta)  是参数模型， $ L(x,y;\theta)$ 单个模型的loss， $\Delta x$ 是对抗扰动， $\Omega$ 是扰动空间。
+  $\theta$  是参数模型， $L(x,y;\theta)$ 单个模型的loss， $\Delta x$ 是对抗扰动， $\Omega$ 是扰动空间。
 
 （1）对 $x$ 加入对抗扰动 $\Delta x$ ，目的是 让 Loss 越大越好，即尽量让 模型 预测错误  
 （2） 当然 $\Delta x$ 不是越大越好，所以他会有一个 约束空间 $\Omega$  
