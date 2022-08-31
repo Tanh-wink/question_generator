@@ -26,25 +26,25 @@ English | [中文](readme_zh.md)
 In response to the problem of "problem generation of Chinese medicine literature", our team's solution is as follows:
 
 + **Training:** 
-(1) The pre-trained models of UniLM-MASK and BERT types are used as the baseline, and the sentence pair of "document + answer + question" is used as input. (2) 结合使用标签平滑和基于 Embedding 层的对抗扰动来防止过拟合。 (3)利用知识蒸馏技术来提高单模型的泛化性能。  
-+ **生成阶段：** (1) 使用 beam search 策略来进行问题生成。(2) 在每个时间步的单词预测阶段，使用基于 **WoBERT** 和 **WoNEZHA** 进行集成投票预测。
+(1) The pre-trained models of UniLM-MASK and BERT types are used as the baseline, and the sentence pair of "document + answer + question" is used as input. (2) Combining label smoothing with adversarial perturbations based on Embedding layers to prevent overfitting. (3)Using knowledge distillation techniques to improve the generalization performance of a single model.
++ **Generating：** (1) Using beam search strategy for question generation.(2) In the word prediction stage at each time step, use ensemble voting prediction based on **WoBERT** and **WoNEZHA**.
 
-本解决方案在复赛榜单排名第四，**Rouge-L** 得分是：0.6278。
+This solution ranks fourth in the semi-finals list，with **Rouge-L** score：0.6278.
 	
 
-## 2.2 数据预处理模块
-使用 main.py 中的 load_train_json 函数，从原始数据 round1_train_0907.json 中提出去 QA pair。  
-我们尝试过剔除原始文本中的一些 非法字符 ，对一些字符进行替换。但模型的效果没有提升，所以，数据预处理的模块，暂时只起到数据提取和编码的作用。    
-我们将 text 和 answer 作为 Bert 的第一个句子，question 作为 bert 的第二个句子。具体编码格式如下：  
+## 2.2 Data preprocessing
+Use the load_train_json function in main.py to extract the QA pair from the original data (round1_train_0907.json).   
+We have tried removing some illegal characters from the original text and replacing some characters. However, the performance of the model has not been improved. Therefore, the data preprocessing module only plays the role of data extraction and encoding for the time being.    
+Concretely, We take text and answer as Bert's first sentence, and question as Bert's second sentence.The encoding format is as follows:  
 ~~~
     token_ids: [CLS] + text + [SEP] + answer + [SEP] + question + [SEP]
     segment_ids:  0 + 0 + 0 + 0 + 0 + 1 + 1	
 ~~~
-数据集划分：
-	我们使用 sklearn 的 train_test_split 函数对训练数据进行划分，90% 做为训练集， 10% 作为验证集。通过设置随机种子为 42 ，让实验具有可复现性。
+Data set division:
+	We use sklearn's train_test_split function to split the training data, 90% as training set and 10% as validation set. Make the experiment reproducible by setting the random seed to 42 .
 
 ## 2.3 Model Building
-### 2.3.1 预训练文件
+### 2.3.1 Pretraining models
 
 基于已做的实验结果，我们选择性能表现最好的两种 bert 模型作为 ensemble 的对象：   
 
