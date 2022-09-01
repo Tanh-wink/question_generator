@@ -86,60 +86,61 @@ $$
 
   $\theta$ is the parameters of model， $L(x,y;\theta)$ is the loss of a single model. $\Delta x$ is adversarial perturbation. $\Omega$ is the disturbance space.
 
-（1）对 $x$ 加入对抗扰动 $\Delta x$ ，目的是 让 Loss 越大越好，即尽量让 模型 预测错误  
-（2） 当然 $\Delta x$ 不是越大越好，所以他会有一个 约束空间 $\Omega$  
-（3）每个样本构造出来 对抗样本 $x + \Delta x$ 后，用它作为模型的输入，来最小化 loss， 更新模型的参数  
+（1）Add adversarial perturbation $\Delta x$ to $x$, the purpose is to make the Loss as large as possible, that is, try to make the model prediction error.  
+（2） Of course $\Delta x$ is not as big as possible, so it will have a constraint space $\Omega$
+（3）After each sample is constructed against the sample $x + \Delta x$, and use it as the input of the model to minimize loss and update the parameters of the model  
 
 
-**Calculated $\Delta x$ using FGM **  
+Calculated $\Delta x$ using ** FGM **  
 
-因为目的是为了增大 loss ，loss 减少的方法是梯度下降，那么 loss 增大的方法，我们就可以使用 梯度上升
+Because the purpose is to increase loss, and the method of loss reduction is gradient descent, then the method of loss increase, we can use gradient ascent
 
-所以，可以这样取
+So, we can take
 
 $$
 \Delta x = \epsilon \triangledown_x Loss(x, y; \theta)
 $$
 
-$\epsilon$ 是一个超参数，一般取 0.1
+$\epsilon$ is a hyperparameter, generally 0.1.  
 
-为了防止计算出来的梯度过大，我们对梯度进行标准化
+In order to prevent the calculated gradient from being too large, we normalize the gradient:
 
 $$
 \Delta x = \epsilon \frac{\triangledown_x Loss(x, y; \theta)}{||\triangledown_x Loss(x, y; \theta)||}
 $$
 
-针对 Embedding Weights 进行对抗扰动，维度情况：
+Adversarial perturbation for Embedding Weights, dimension:
 
-$x \in \mathbb{R}^{vocab\_size, dim}$  是词嵌入层的权重
+$x \in \mathbb{R}^{vocab\_size, dim}$  is the weights of the word embedding layer.  
 
-$\triangledown_x Loss(x, y; \theta) \in \mathbb{R}^{vocab\_size, dim}$ 是词嵌入层的梯度
+$\triangledown_x Loss(x, y; \theta) \in \mathbb{R}^{vocab\_size, dim}$ is the gradient of the word embedding layer.  
 
-### 2.3.4 知识蒸馏
+### 2.3.4 Knowledge Distillation
 
-知识蒸馏就是 通过引入与 Teacher Model  相关的软目标（soft-target）作为 total loss 的一部分，以指导 Student Model 的训练，实现知识迁移（knowledge transfer）。
+Knowledge distillation is to guide the training of the Student Model by introducing the soft-target related to the Teacher Model as part of the total loss to achieve knowledge transfer.
 
-在我们的方案中，Teacher Model  和 Student Model 是结构一样的 BERT 模型。
+In our solution, Teacher Model and Student Model are BERT models with the same structure.
 
-**知识蒸馏的实现步骤：**
+**The implementation details of knowledge distillation:**
 
-1. 训练一个 Teacher Model
-2. 在 Student Model  的训练过程中，加入对 Teacher Model 输出的 标签概率 (soft target) ，并计算与 其 的 softmax loss ，
-3. 再 与 真实标签 (hard target) 的 softmax loss  进行叠加，作为一个总的 loss 
+1. Train a Teacher Model;
+2. During the training process of the Student Model, add the label probability (soft target) output by the Teacher Model, and calculate the softmax loss with it;
+3. Finally superimposed with the softmax loss of the real label (hard target) as a total loss 
 
-**引入温度系数：**
+**temperature coefficient：**
 
-直接使用训练好的 teacher model 输出的预测概率，可能不太合适。
+It may not be appropriate to directly use the predicted probabilities output by the trained teacher model.
 
-因为，一个网络训练好后，对正标签有很高的置信度，负标签的值都很接近0，对损失函数的贡献非常小，小到可以忽略不计。
+Because, after a network is trained, it has a high degree of confidence in the positive label, and the value of the negative label is very close to 0, and the contribution to the loss function is very small, so small that it can be ignored.
 
-所以，可以引入一个 温度 变量，来让 概率分布 更加平滑。
+Therefore, a temperature variable can be introduced to make the probability distribution smoother.
+
 $$
 \hat{t}_i = softmax(t_i/T)
 $$
-$t_i$ 是 teacher 模型进行 $softmax$ 之前的概率向量。 
+$t_i$ is the probability vector of the teacher model before $softmax$。 
 
-$T$ 是缩放因子。
+$T$ is the scaling factor.
 
 当  $T$ 越高，$softmax$ 的 输出概率 越平滑，其分布的熵越大，负标签携带的信息会被相对地放大，模型训练将更加关注负标签。
 
@@ -151,11 +152,11 @@ $T$ 是缩放因子。
 
 2. Student Model: 训练所使用的 Loss function 是 “Bert 预测出来的全部 question 单词概率” 与 “原全部 question 单词概率”  （标签平滑后）的 KL散度 以及   “Bert 预测出来的全部 question 单词概率” 与  “Teacher 预测出来的全部 question 单词概率”的KL散度。 
 
-### 2.3.6 训练模型的保存：
+### 2.3.6 Save model：
 
 在每一个 epoch 结束后，会计算模型在验证集上的 Rouge-L 分数，如果  Rouge-L 高于之前最优的  Rouge-L ，则保存最新的模型。我们使用 greedy search 来对验证集进行问题生成。  
 
-## 2.4 参数设置：
+## 2.4 Experimental details：
 
 (1) 文本长度设置（主要基于文本长度的分布）：
     + text 的最大长度 (max_t_len) 为 384
@@ -177,7 +178,7 @@ $T$ 是缩放因子。
     + 初始学习率为 3e-5
     + 使用学习率线性衰减函数，让 学习率 从第 1 个 step 到 最后一个 step ，线性衰减到 初始学习率 的 50% 。
 
-## 2.5 模型预测：
+## 2.5 Model prediction：
 加载训练好的 **WoBERT** 和 **WoNEZHA** 的 Student Model   
 
 在进行问题生成时，对于每个 token 的预测，将两个模型预测的 logits 进行平均加权求和，让预测出来的 token 尽量在 **WoBERT** 和 **WoNEZHA** 中得分靠前。  
