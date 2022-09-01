@@ -138,6 +138,7 @@ Therefore, a temperature variable can be introduced to make the probability dist
 $$
 \hat{t}_i = softmax(t_i/T)
 $$
+
 $t_i$ is the probability vector of the teacher model before $softmax$。 
 
 $T$ is the scaling factor.
