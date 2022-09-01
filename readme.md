@@ -161,9 +161,9 @@ After each epoch, the Rouge-L score of the model on the validation set is calcul
 
 (1) Text length settings (mainly based on the distribution of text lengths): 
 
-    + text 的最大长度 (max_t_len) 为 384  
-    + answer 的最大长度 (max_a_len) 为 96  
-    + question 的最大长度 (max_q_len) 为 32  
+    +text 的最大长度 (max_t_len) 为 384  
+    +answer 的最大长度 (max_a_len) 为 96  
+    +question 的最大长度 (max_q_len) 为 32  
 
 (2) Training parameters:  
 
