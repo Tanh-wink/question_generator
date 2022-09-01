@@ -161,29 +161,29 @@ After each epoch, the Rouge-L score of the model on the validation set is calcul
 
 (1) Text length settings (mainly based on the distribution of text lengths): 
 
-    +text 的最大长度 (max_t_len) 为 384  
-    +answer 的最大长度 (max_a_len) 为 96  
-    +question 的最大长度 (max_q_len) 为 32  
+    a) The maximum length of text (max_t_len) is 384  
+    b) The maximum length of answer (max_a_len) is 96 
+    c) The maximum length of question (max_q_len) is 32
 
 (2) Training parameters:  
 
-    + batch_size : 4   
-    + gradient_accumulation_steps : 8   
-    + EPOCHS: 5 
-    + 标签平滑的平滑因子 (label_weight) : 0.1   
-    + 对抗训练的 $\epsilon$  (ADV_epsilon) : WoBERT 为 0.3， WoNEZHA 为 0.1   
-    + Teache model 在 Student loss 中所占的权重 (teacher_rate) : 0.5  
-    + 温度系数 (temperature) : 10  
+    a) batch_size : 4   
+    b) gradient_accumulation_steps : 8   
+    c) EPOCHS: 5 
+    d) Smoothing factor for label smoothing (label_weight) : 0.1   
+    e) Adversarial training $\epsilon$  (ADV_epsilon) : WoBERT 为 0.3， WoNEZHA 为 0.1   
+    f) The weight of the Teacher model in Student loss (teacher_rate) : 0.5  
+    g) temperature: 10  
     
 (3) Optimizer settings:  
 
-    + Adam optimizer  
-    + Initial learning rate is 3e-5  
-    + 使用学习率线性衰减函数，让 学习率 从第 1 个 step 到 最后一个 step ，线性衰减到 初始学习率 的 50% 。
+    a) Adam optimizer  
+    b) Initial learning rate is 3e-5  
+    c) Use the learning rate linear decay function to let the learning rate decay linearly from the first step to the last step to 50% of the initial learning rate.
 
 ## 2.5 Model prediction： 
-加载训练好的 **WoBERT** 和 **WoNEZHA** 的 Student Model   
+Load the trained **WoBERT** and **WoNEZHA** Student Models   
 
-在进行问题生成时，对于每个 token 的预测，将两个模型预测的 logits 进行平均加权求和，让预测出来的 token 尽量在 **WoBERT** 和 **WoNEZHA** 中得分靠前。  
+When generating the question, for each token prediction, the logits predicted by the two models are averagely weighted and summed, so that the predicted token can score as high as possible in **WoBERT** and **WoNEZHA**.
 
-我们采用 beam search 的方式，来对测试集进行问题生成， beam 的个数为 5 。	
+We use the beam search method to generate questions for the test set, and the number of beams is 5.
