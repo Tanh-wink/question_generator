@@ -62,36 +62,36 @@ These two properties give Bert the seq2seq capability.
 
 ## 2.3.2 Label Smoothing
 
-标签平滑 是 一种正则化方法，通常用于分类问题，目的是防止模型在训练时过于自信地预测标签，改善泛化能力差的问题。
+Label smoothing is a regularization method commonly used in classification problems to prevent models from overconfidently predicting labels during training, and improve problems with poor generalization.
 
-将真实的标签进行 label smoothing
+Smooth the real labels
 
 $$  
 \hat{y}_i = y_i*(1 - \alpha) + \frac{\alpha}{K}
 $$  
 
-$y_i$ 是第 i 个样本的 one-hot 标签向量，维度是词表的大小
+$y_i$ is the one-hot label vector of the i sample, which dimension is the size of the vocabulary.
 
-$\alpha$是平滑因子，通常是 0.1 ， $ K $ 是类别个数， $ \hat{y}_i $平滑后的标签向量
+$\alpha$ is the smoothing factor, usually setting 0.1. $K$ is the number of categories， $\hat{y}_i$ is smoothed label vector.
 
-### 2.3.3 针对 Embedding 层的对抗扰动
+### 2.3.3 Adversarial perturbations based embedding layers
 
-对抗扰动本质上就是对抗训练，就是构造了一些对抗样本加入到原数据集中，增强模型对对抗样本的鲁棒性，同时提高模型的表现。但 NLP 的输入是文本，本质上就是 one-hot 向量，因此不存在所谓的 小扰动。因此，我们可以从 Embedding 层进行对抗扰动。在我们的方案中，我们是直接对 Embedding 层的权重进行扰动，让 look-up 后的词向量发生变化。
+Adversarial perturbation is essentially adversarial training, which is to construct some adversarial samples and add them to the original data set to enhance the robustness of the model to adversarial samples and improve the performance of the model. But the input of NLP is text, which is essentially a one-hot vector, so there is no so-called small perturbation. Therefore, we can do adversarial perturbations from the Embedding layer. In our scheme, we directly perturb the weight of the Embedding layer to change the word vector after look-up.
 
-对抗扰动的公式：
+The formula against perturbation:
 
 $$
 \mathop{min}\limits_{\theta} \mathbb{E}_{(x,y) \in D}[\mathop{max}\limits_{\Delta x\in \Omega} Loss(x+\Delta x, y; \theta)]
 $$
 
-  $\theta$ 是参数模型， $L(x,y;\theta)$ 单个模型的loss， $\Delta x$ 是对抗扰动， $\Omega$ 是扰动空间。
+  $\theta$ is the parameters of model， $L(x,y;\theta)$ is the loss of a single model. $\Delta x$ is adversarial perturbation. $\Omega$ is the disturbance space.
 
 （1）对 $x$ 加入对抗扰动 $\Delta x$ ，目的是 让 Loss 越大越好，即尽量让 模型 预测错误  
 （2） 当然 $\Delta x$ 不是越大越好，所以他会有一个 约束空间 $\Omega$  
 （3）每个样本构造出来 对抗样本 $x + \Delta x$ 后，用它作为模型的输入，来最小化 loss， 更新模型的参数  
 
 
-**使用 FGM 计算 **  $\Delta x$
+**Calculated $\Delta x$ using FGM **  
 
 因为目的是为了增大 loss ，loss 减少的方法是梯度下降，那么 loss 增大的方法，我们就可以使用 梯度上升
 
