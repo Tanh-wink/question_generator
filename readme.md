@@ -159,12 +159,14 @@ After each epoch, the Rouge-L score of the model on the validation set is calcul
 
 ## 2.4 Experimental details：
 
-(1) Text length settings (mainly based on the distribution of text lengths):    
+(1) Text length settings (mainly based on the distribution of text lengths): 
+
     + text 的最大长度 (max_t_len) 为 384  
     + answer 的最大长度 (max_a_len) 为 96  
     + question 的最大长度 (max_q_len) 为 32  
 
 (2) Training parameters:  
+
     + batch_size : 4   
     + gradient_accumulation_steps : 8   
     + EPOCHS: 5 
@@ -174,6 +176,7 @@ After each epoch, the Rouge-L score of the model on the validation set is calcul
     + 温度系数 (temperature) : 10  
     
 (3) Optimizer settings:  
+
     + Adam optimizer  
     + Initial learning rate is 3e-5  
     + 使用学习率线性衰减函数，让 学习率 从第 1 个 step 到 最后一个 step ，线性衰减到 初始学习率 的 50% 。
