@@ -137,9 +137,11 @@ $\triangledown_x Loss(x, y; \theta) \in \mathbb{R}^{vocab\_size, dim}$ 是词嵌
 因为，一个网络训练好后，对正标签有很高的置信度，负标签的值都很接近0，对损失函数的贡献非常小，小到可以忽略不计。
 
 所以，可以引入一个 温度 变量，来让 概率分布 更加平滑。
+
 $$
 \hat{t}_i = softmax(t_i/T)
 $$
+
 $t_i$ 是 teacher 模型进行 $softmax$ 之前的概率向量。 
 
 $T$ 是缩放因子。
