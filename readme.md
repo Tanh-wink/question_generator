@@ -159,37 +159,23 @@ After each epoch, the Rouge-L score of the model on the validation set is calcul
 
 ## 2.4 Experimental details：
 
-(1) Text length settings (mainly based on the distribution of text lengths):  
-    + text 的最大长度 (max_t_len) 为 384
-    
-    + answer 的最大长度 (max_a_len) 为 96
-    
-    + question 的最大长度 (max_q_len) 为 32
+(1) Text length settings (mainly based on the distribution of text lengths):    
+    + text 的最大长度 (max_t_len) 为 384  
+    + answer 的最大长度 (max_a_len) 为 96  
+    + question 的最大长度 (max_q_len) 为 32  
 
-(2) Training parameters:
-
-    + batch_size : 4
+(2) Training parameters:  
+    + batch_size : 4   
+    + gradient_accumulation_steps : 8   
+    + EPOCHS: 5 
+    + 标签平滑的平滑因子 (label_weight) : 0.1   
+    + 对抗训练的 $\epsilon$  (ADV_epsilon) : WoBERT 为 0.3， WoNEZHA 为 0.1   
+    + Teache model 在 Student loss 中所占的权重 (teacher_rate) : 0.5  
+    + 温度系数 (temperature) : 10  
     
-    + gradient_accumulation_steps : 8
-    
-    + EPOCHS: 5   
-    
-    大部分实验在第 5 次迭代训练结束后，模型性能达到最优
-    
-    + 标签平滑的平滑因子 (label_weight) : 0.1
-    
-    + 对抗训练的 $\epsilon$  (ADV_epsilon) : WoBERT 为 0.3， WoNEZHA 为 0.1
-    
-    + Teache model 在 Student loss 中所占的权重 (teacher_rate) : 0.5
-    
-    + 温度系数 (temperature) : 10
-    
-(3) Optimizer settings:
-
-    + Adam optimizer
-    
-    + Initial learning rate is 3e-5
-    
+(3) Optimizer settings:  
+    + Adam optimizer  
+    + Initial learning rate is 3e-5  
     + 使用学习率线性衰减函数，让 学习率 从第 1 个 step 到 最后一个 step ，线性衰减到 初始学习率 的 50% 。
 
 ## 2.5 Model prediction： 
