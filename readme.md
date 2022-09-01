@@ -143,40 +143,40 @@ $t_i$ is the probability vector of the teacher model before $softmax$。
 
 $T$ is the scaling factor.
 
-当  $T$ 越高，$softmax$ 的 输出概率 越平滑，其分布的熵越大，负标签携带的信息会被相对地放大，模型训练将更加关注负标签。
+When $T$ is higher, the output probability of $softmax$ is smoother, the entropy of its distribution is larger, the information carried by negative labels will be relatively amplified, and model training will pay more attention to negative labels.
 
-放大负标签概率还有一个好处： 就是可以让 Student 模型学习到 不同 负标签 与 正标签 之间的关系。 比如一只狗，在猫这个类别下的概率值可能是0.001，而在汽车这个类别下的概率值可能就只有0.0000001不到，这能够反映狗和猫比狗和汽车更为相似，这就是大规模神经网络能够得到的更为丰富的数据结构间的相似信息。
+Amplifying the probability of negative labels has another benefit: it allows the Student model to learn the relationship between different negative labels and positive labels. For example, a dog may have a probability value of 0.001 in the category of cats, while the probability value in the category of cars may be less than 0.0000001, which can reflect that dogs and cats are more similar than dogs and cars. Scale neural network can obtain more similar information between data structures.
 
-### 2.3.5 模型的损失函数
+### 2.3.5 Loss Function
 
-1. Teacher Model: 训练所使用的 Loss function 是 “Bert 预测出来的全部 question 单词” 与 “原全部 question 单词”  （标签平滑后）的 KL散度 。 
+1. Teacher Model: The Loss function used for training is the KL divergence between "all the question words predicted by Bert" and "all the original question words" (after label smoothing). 
 
-2. Student Model: 训练所使用的 Loss function 是 “Bert 预测出来的全部 question 单词概率” 与 “原全部 question 单词概率”  （标签平滑后）的 KL散度 以及   “Bert 预测出来的全部 question 单词概率” 与  “Teacher 预测出来的全部 question 单词概率”的KL散度。 
+2. Student Model: The Loss function used in training is the KL divergence of "probability of all question words predicted by Bert" and "probability of all original question words" (after label smoothing) and "probability of all question words predicted by Bert" and "Teacher predicted The KL divergence of all question word probabilities". 
 
 ### 2.3.6 Save model：
 
-在每一个 epoch 结束后，会计算模型在验证集上的 Rouge-L 分数，如果  Rouge-L 高于之前最优的  Rouge-L ，则保存最新的模型。我们使用 greedy search 来对验证集进行问题生成。  
+After each epoch, the Rouge-L score of the model on the validation set is calculated. If the Rouge-L is higher than the previous optimal Rouge-L, the latest model is saved. We use greedy search for question generation on the validation set.  
 
 ## 2.4 Experimental details：
 
-(1) 文本长度设置（主要基于文本长度的分布）：
+(1) Text length settings (mainly based on the distribution of text lengths):
     + text 的最大长度 (max_t_len) 为 384
     + answer 的最大长度 (max_a_len) 为 96
     + question 的最大长度 (max_q_len) 为 32
 
-(2) 训练参数（主要基于大量的调参实验）：
+(2) Training parameters:
     + batch_size : 4
-    + 梯度累积步数 (gradient_accumulation_steps) : 8
-    + 迭代次数(EPOCHS) : 5   
+    + gradient_accumulation_steps : 8
+    + EPOCHS: 5   
     大部分实验在第 5 次迭代训练结束后，模型性能达到最优
     + 标签平滑的平滑因子 (label_weight) : 0.1
     + 对抗训练的 $\epsilon$  (ADV_epsilon) : WoBERT 为 0.3， WoNEZHA 为 0.1
     + Teache model 在 Student loss 中所占的权重 (teacher_rate) : 0.5
     + 温度系数 (temperature) : 10
     
-(3) 优化器设置：
-    + 使用 Adam 优化器
-    + 初始学习率为 3e-5
+(3) Optimizer settings:
+    + Adam optimizer
+    + Initial learning rate is 3e-5
     + 使用学习率线性衰减函数，让 学习率 从第 1 个 step 到 最后一个 step ，线性衰减到 初始学习率 的 50% 。
 
 ## 2.5 Model prediction：
