@@ -70,7 +70,7 @@ $$
 \hat{y}_i = y_i*(1 - \alpha) + \frac{\alpha}{K}
 $$  
 
-$y_i$ is the one-hot label vector of the i sample, which dimension is the size of the vocabulary.
+where $y_i$ is the one-hot label vector of the i sample, which dimension is the size of the vocabulary.
 
 $\alpha$ is the smoothing factor, usually setting 0.1. $K$ is the number of categories， $\hat{y}_i$ is smoothed label vector.
 
@@ -84,7 +84,7 @@ $$
 \mathop{min}\limits_{\theta} \mathbb{E}_{(x,y) \in D}[\mathop{max}\limits_{\Delta x\in \Omega} Loss(x+\Delta x, y; \theta)]
 $$
 
-  $\theta$ is the parameters of model， $L(x,y;\theta)$ is the loss of a single model. $\Delta x$ is adversarial perturbation. $\Omega$ is the disturbance space.
+ where $\theta$ is the parameters of model， $L(x,y;\theta)$ is the loss of a single model. $\Delta x$ is adversarial perturbation. $\Omega$ is the disturbance space.
 
 （1）Add adversarial perturbation $\Delta x$ to $x$, the purpose is to make the Loss as large as possible, that is, try to make the model prediction error.  
 （2） Of course $\Delta x$ is not as big as possible, so it will have a constraint space $\Omega$
@@ -101,7 +101,7 @@ $$
 \Delta x = \epsilon \triangledown_x Loss(x, y; \theta)
 $$
 
-$\epsilon$ is a hyperparameter, generally 0.1.  
+where $\epsilon$ is a hyperparameter, generally 0.1.  
 
 In order to prevent the calculated gradient from being too large, we normalize the gradient:
 
@@ -139,7 +139,7 @@ $$
 \hat{t}_i = softmax(t_i/T)
 $$
 
-$t_i$ is the probability vector of the teacher model before $softmax$。 
+where $t_i$ is the probability vector of the teacher model before $softmax$. 
 
 $T$ is the scaling factor.
 
