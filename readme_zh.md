@@ -172,8 +172,7 @@ $T$ 是缩放因子。
 
     + batch_size : 4
     + 梯度累积步数 (gradient_accumulation_steps) : 8
-    + 迭代次数(EPOCHS) : 5   
-    大部分实验在第 5 次迭代训练结束后，模型性能达到最优
+    + 迭代次数(EPOCHS) : 5 ，大部分实验在第 5 次迭代训练结束后，模型性能达到最优
     + 标签平滑的平滑因子 (label_weight) : 0.1
     + 对抗训练的 $\epsilon$  (ADV_epsilon) : WoBERT 为 0.3， WoNEZHA 为 0.1
     + Teache model 在 Student loss 中所占的权重 (teacher_rate) : 0.5
