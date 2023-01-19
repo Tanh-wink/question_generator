@@ -26,8 +26,15 @@ English | [中文](readme_zh.md)
 In response to the problem of "problem generation of Chinese medicine literature", our team's solution is as follows:
 
 + **Training:** 
-(1) The pre-trained models of UniLM-MASK and BERT types are used as the baseline, and the sentence pair of "document + answer + question" is used as input. (2) Combining label smoothing with adversarial perturbations based on Embedding layers to prevent overfitting. (3)Using knowledge distillation techniques to improve the generalization performance of a single model.
-+ **Generating：** (1) Using beam search strategy for question generation.(2) In the word prediction stage at each time step, use ensemble voting prediction based on **WoBERT** and **WoNEZHA**.
+
+(1) The pre-trained models of UniLM-MASK and BERT types are used as the baseline, and the sentence pair of "document + answer + question" is used as input. 
+
+(2) Combining label smoothing with adversarial perturbations based on Embedding layers to prevent overfitting. (3)Using knowledge distillation techniques to improve the generalization performance of a single model.
++ **Generating：** 
+
+(1) Using beam search strategy for question generation.
+
+(2) In the word prediction stage at each time step, use ensemble voting prediction based on **WoBERT** and **WoNEZHA**.
 
 This solution ranks fourth in the semi-finals list，with **Rouge-L** score：0.6278.
 	
